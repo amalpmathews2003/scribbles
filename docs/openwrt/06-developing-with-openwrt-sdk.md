@@ -1,5 +1,4 @@
-
-# Development with OpenWRT SDK
+# Developing with OpenWRT SDK
 
 This guide explains how to build and use the OpenWRT Software Development Kit (SDK) from the OpenWRT source tree using `make menuconfig`, and develop a custom "Hello, World!" package, following the [OpenWRT SDK Guide](https://openwrt.org/docs/guide-developer/toolchain/using_the_sdk) and [Hello World Tutorial](https://openwrt.org/docs/guide-developer/helloworld/start). It covers why the SDK is beneficial, its use cases, and step-by-step instructions for building the SDK, creating a package, building, deploying, and testing.
 
