@@ -57,8 +57,8 @@ const config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          // editUrl:
+          //   'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -67,6 +67,7 @@ const config = {
         docs: {
           routeBasePath: '/docs',
           sidebarPath: './sidebars.js',
+          editUrl: 'https://github.com/amalpmathews2003/scribbles/tree/master/',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -95,7 +96,7 @@ const config = {
           },
           { to: '/blog', label: 'Blog', position: 'left' },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/amalpmathews2003/scribbles',
             label: 'GitHub',
             position: 'right',
           },
@@ -105,7 +106,6 @@ const config = {
         appId: 'VQ3SORLAH6',
         apiKey: '26476081e26f3df0b0ba07aee4bcd73d',
         indexName: 'My Docs',
-        contextualSearch: false,
       },
       footer: {
         style: 'dark',
@@ -145,7 +145,7 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/amalpmathews2003/scribbles',
               },
             ],
           },
