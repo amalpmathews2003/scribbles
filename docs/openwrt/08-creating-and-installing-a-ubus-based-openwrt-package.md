@@ -6,7 +6,7 @@ This guide outlines how to create, build, and install a custom OpenWRT package f
 ## Prerequisites
 
 - **OpenWRT Build Environment or SDK**: Set up as per [Module 3](#) or [Module 9](#) (e.g., OpenWRT source or SDK for the target architecture, such as x86_64).
-- **Target Device**: An OpenWRT device with SSH access and `opkg` package manager.
+- **Target Device**: An OpenWRT device with SSH access and `apk` package manager.
 - **Dependencies**: Ensure `libubus` and `libubox` are available in the build system and on the target device.
 - **Development Host**: A Linux system (e.g., Ubuntu) with `make`, `gcc`, and other build tools.
 
@@ -33,7 +33,7 @@ Create the C program file `package/myservice/src/myservice.c` with the provided 
 
 ```c
 #include <libubus.h>
-#include <libubox/ustream.h>
+#include <libubox/blobmsg_json.h>
 
 static struct ubus_context *ctx;
 static struct blob_buf b;
@@ -196,30 +196,30 @@ $(eval $(call BuildPackage,myservice))
      ```bash
      make package/myservice/compile
      ```
-   - Output: A package file named `myservice_1.0-1_<arch>.ipk` in `bin/packages/<arch>/base/` (or `bin/packages/<arch>/mypackages/` if using a custom feed).
-     - Example: `bin/packages/x86_64/base/myservice_1.0-1_x86_64.ipk`.
+   - Output: A package file named `myservice_1.0-1_<arch>.apk` in `bin/packages/<arch>/base/` (or `bin/packages/<arch>/mypackages/` if using a custom feed).
+     - Example: `bin/packages/x86_64/base/myservice_1.0-1_x86_64.apk`.
 
 ## Step 6: Deploy the Package to OpenWRT
 
 1. **Transfer the Package**:
-   - Copy the `.ipk` file to the OpenWRT device:
+   - Copy the `.apk` file to the OpenWRT device:
      ```bash
-     scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.ipk root@192.168.1.1:/tmp/
+     scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.apk root@192.168.1.1:/tmp/
      ```
 
 2. **Install Dependencies**:
    - SSH into the device and ensure `libubus` and `libubox` are installed:
      ```bash
      ssh root@192.168.1.1
-     opkg update
-     opkg install libubus libubox
+     apk update
+     apk install libubus libubox
      ```
 
 3. **Install the Package**:
    - Install the `myservice` package:
      ```bash
      cd /tmp
-     opkg install myservice_1.0-1_x86_64.ipk
+     apk install myservice_1.0-1_x86_64.apk
      ```
 
 ## Step 7: Run and Test the Service
@@ -334,12 +334,12 @@ To run `myservice` as a managed daemon, add an init script.
      make package/myservice/clean
      make package/myservice/compile
      ```
-   - Transfer and install the updated `.ipk` file:
+   - Transfer and install the updated `.apk` file:
      ```bash
-     scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.ipk root@192.168.1.1:/tmp/
+     scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.apk root@192.168.1.1:/tmp/
      ssh root@192.168.1.1
      cd /tmp
-     opkg install --force-reinstall myservice_1.0-1_x86_64.ipk
+     apk install --force-reinstall myservice_1.0-1_x86_64.apk
      ```
 
 4. **Enable and Start the Service**:
@@ -366,6 +366,58 @@ To run `myservice` as a managed daemon, add an init script.
      ubus call myservice say_hello
      ```
 
+## Step 9: Argument Handling 
+```c
+static int hello_with_name_method(
+    struct ubus_context *ctx,
+    struct ubus_object *obj,
+    struct ubus_request_data *req,
+    const char *method,
+    struct blob_attr *msg)
+{
+    enum {
+        HELLO_NAME,
+        __HELLO_MAX
+    };
+
+    static const struct blobmsg_policy policy[] = {
+        [HELLO_NAME] = { .name = "name", .type = BLOBMSG_TYPE_STRING },
+    };
+
+    struct blob_attr *tb[__HELLO_MAX];
+    blobmsg_parse(policy, __HELLO_MAX, tb, blob_data(msg), blob_len(msg));
+
+    char *name = "stranger";
+    if (tb[HELLO_NAME]) {
+        name = blobmsg_get_string(tb[HELLO_NAME]);
+    }
+
+    blob_buf_init(&b, 0);
+    char buff[128];
+    snprintf(buff, sizeof(buff), "hello %s", name);
+    blobmsg_add_string(&b, "message", buff);
+    ubus_send_reply(ctx, req, b.head);
+
+    return 0;
+}
+
+static const struct ubus_method my_methods[] = {
+    UBUS_METHOD_NOARG("say_hello", hello_method),
+    UBUS_METHOD("say_hello_with_name", hello_with_name_method, policy),
+};
+```
+
+- Call the `say_hello_with_name` method with an argument:
+     ```bash
+     ubus call myservice say_hello_with_name '{"name": "Amal"}'
+     ```
+- Expected output:
+  ```
+  {
+      "message": "hello Amal"
+  }
+  ```
+
 ## Troubleshooting
 
 - **Ubus Object Not Listed**:
@@ -376,8 +428,8 @@ To run `myservice` as a managed daemon, add an init script.
   - Confirm `libubus` and `libubox` are selected in `make menuconfig` (`Libraries > libubus`, `libubox`).
   - Check for missing headers or libraries in the `Makefile`.
 - **Package Installation Fails**:
-  - Ensure the `.ipk` matches the device’s architecture (`opkg install` will show errors if mismatched).
-  - Install dependencies: `opkg install libubus libubox`.
+  - Ensure the `.apk` matches the device’s architecture (`apk install` will show errors if mismatched).
+  - Install dependencies: `apk install libubus libubox`.
 - **Service Fails to Start**:
   - Check init script permissions: `chmod +x /etc/init.d/myservice`.
   - View logs: `logread -f`.
