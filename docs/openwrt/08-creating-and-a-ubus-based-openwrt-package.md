@@ -1,5 +1,5 @@
 
-# Creating and Installing a Ubus-Based OpenWRT Package
+# Creating a Ubus-Based OpenWRT Package
 
 This guide outlines how to create, build, and install a custom OpenWRT package for a C program that uses the **ubus** IPC framework to register a service named `myservice`. The program exposes a `say_hello` method, and after installation, `ubus list` on the OpenWRT device should list `myservice`. 
 
@@ -15,12 +15,12 @@ This guide outlines how to create, build, and install a custom OpenWRT package f
 1. **Set Up Directory**:
    - Inside the OpenWRT source or SDK directory, create a directory for the custom package:
      ```bash
-     mkdir -p package/myservice/src
+     mkdir -p my-packages/myservice/src
      ```
 
 2. **Directory Structure**:
    ```
-   package/myservice/
+   my-packages/myservice/
    ├── Makefile
    ├── src/
    │   ├── Makefile
@@ -29,7 +29,7 @@ This guide outlines how to create, build, and install a custom OpenWRT package f
 
 ## Step 2: Write the C Program
 
-Create the C program file `package/myservice/src/myservice.c` with the provided ubus code:
+Create the C program file `my-packages/myservice/src/myservice.c` with the provided ubus code:
 
 ```c
 #include <libubus.h>
@@ -100,8 +100,8 @@ int main()
 
 ## Step 3: Create the Source Makefile
 
-Create `package/myservice/src/Makefile` to compile the C program:
-
+Create `my-packages/myservice/src/Makefile` to compile the C program:
+for testing in host system
 ```make
 all: myservice
 
@@ -118,50 +118,46 @@ clean:
 
 ## Step 4: Create the Package Makefile
 
-Create `package/myservice/Makefile` to integrate with the OpenWRT build system:
+Create `my-packages/myservice/Makefile` to integrate with the OpenWRT build system:
 
 ```make
 include $(TOPDIR)/rules.mk
+include $(INCLUDE_DIR)/package.mk	
 
-# Name, version, and release number
 PKG_NAME:=myservice
 PKG_VERSION:=1.0
 PKG_RELEASE:=1
-PKG_LICENSE:=GPL-2.0
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
+SOURCE_DIR:=$(TOPDIR)/my-packages/${PKG_NAME}/src
 
-include $(INCLUDE_DIR)/package.mk
-
-define Package/myservice
-    SECTION:=utils
-    CATEGORY:=Utilities
-    TITLE:=My Ubus Service
-    DEPENDS:=+libubus +libubox
+define Package/${PKG_NAME}
+  SECTION:=utils
+  CATEGORY:=Utilities
+  TITLE:=My Ubus Application
+  DEPENDS:=+libubus +libubox
 endef
 
-define Package/myservice/description
-    A simple ubus-based service exposing a 'say_hello' method.
+define Package/${PKG_NAME}/description
+  A custom application using ubus.
 endef
 
 define Build/Prepare
-    mkdir -p $(PKG_BUILD_DIR)
-    $(CP) ./src/* $(PKG_BUILD_DIR)/
+		mkdir -p $(PKG_BUILD_DIR)
+		cp $(SOURCE_DIR)/* $(PKG_BUILD_DIR)
+		$(Build/Patch)
 endef
 
 define Build/Compile
-    $(MAKE) -C $(PKG_BUILD_DIR) \
-        CC="$(TARGET_CC)" \
-        CFLAGS="$(TARGET_CFLAGS)" \
-        LDFLAGS="$(TARGET_LDFLAGS)"
+	$(TARGET_CC) $(TARGET_CFLAGS) -o $(PKG_BUILD_DIR)/${PKG_NAME} $(PKG_BUILD_DIR)/hello-service.c -lubus -lubox
 endef
 
-define Package/myservice/install
-    $(INSTALL_DIR) $(1)/usr/bin
-    $(INSTALL_BIN) $(PKG_BUILD_DIR)/myservice $(1)/usr/bin/
+define Package/${PKG_NAME}/install
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/${PKG_NAME} $(1)/usr/bin/
 endef
 
-$(eval $(call BuildPackage,myservice))
+$(eval $(call BuildPackage,${PKG_NAME}))
 ```
 
 - **Explanation**:
@@ -174,7 +170,7 @@ $(eval $(call BuildPackage,myservice))
 1. **Update Feeds** (if using a custom feed):
    - If the package is in a custom feed (e.g., `my-packages/`), update `feeds.conf`:
      ```bash
-     echo "src-link mypackages $(pwd)/package" >> feeds.conf
+     echo "src-link mypackages $(pwd)/my-packages" >> feeds.conf
      ```
    - Update and install feeds:
      ```bash
@@ -207,15 +203,7 @@ $(eval $(call BuildPackage,myservice))
      scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.apk root@192.168.1.1:/tmp/
      ```
 
-2. **Install Dependencies**:
-   - SSH into the device and ensure `libubus` and `libubox` are installed:
-     ```bash
-     ssh root@192.168.1.1
-     apk update
-     apk install libubus libubox
-     ```
-
-3. **Install the Package**:
+2. **Install the Package**:
    - Install the `myservice` package:
      ```bash
      cd /tmp
@@ -284,48 +272,12 @@ To run `myservice` as a managed daemon, add an init script.
 2. **Update Package Makefile**:
    - Modify `package/myservice/Makefile` to install the init script:
      ```make
-     include $(TOPDIR)/rules.mk
-
-     PKG_NAME:=myservice
-     PKG_VERSION:=1.0
-     PKG_RELEASE:=1
-     PKG_LICENSE:=GPL-2.0
-
-     PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
-
-     include $(INCLUDE_DIR)/package.mk
-
-     define Package/myservice
-         SECTION:=utils
-         CATEGORY:=Utilities
-         TITLE:=My Ubus Service
-         DEPENDS:=+libubus +libubox
-     endef
-
-     define Package/myservice/description
-         A simple ubus-based service exposing a 'say_hello' method.
-     endef
-
-     define Build/Prepare
-         mkdir -p $(PKG_BUILD_DIR)
-         $(CP) ./src/* $(PKG_BUILD_DIR)/
-     endef
-
-     define Build/Compile
-         $(MAKE) -C $(PKG_BUILD_DIR) \
-             CC="$(TARGET_CC)" \
-             CFLAGS="$(TARGET_CFLAGS)" \
-             LDFLAGS="$(TARGET_LDFLAGS)"
-     endef
-
      define Package/myservice/install
          $(INSTALL_DIR) $(1)/usr/bin
          $(INSTALL_BIN) $(PKG_BUILD_DIR)/myservice $(1)/usr/bin/
          $(INSTALL_DIR) $(1)/etc/init.d
          $(INSTALL_BIN) ./files/myservice.init $(1)/etc/init.d/myservice
      endef
-
-     $(eval $(call BuildPackage,myservice))
      ```
 
 3. **Rebuild and Reinstall**:
@@ -417,6 +369,64 @@ static const struct ubus_method my_methods[] = {
       "message": "hello Amal"
   }
   ```
+
+## Step 10: UCI Integration 
+```c
+static void __get_hostname_cb(
+    struct ubus_request *req,
+    int type,
+    struct blob_attr *msg)
+{
+
+  struct ubus_request_data *req_t = req->priv;
+  struct blob_attr *tb;
+  static const struct blobmsg_policy policy = {
+      .name = "value",
+      .type = BLOBMSG_TYPE_STRING};
+
+  blobmsg_parse(&policy, 1, &tb, blob_data(msg), blob_len(msg));
+  if (tb && blobmsg_type(tb) == BLOBMSG_TYPE_STRING)
+  {
+    blob_buf_init(&b, 0);
+    blobmsg_add_string(&b,"hostname", blobmsg_get_string(tb));
+    ubus_send_reply(ctx, req_t, b.head);
+  }
+
+}
+
+static int get_hostname_method(
+    struct ubus_context *ctx,
+    struct ubus_object *obj,
+    struct ubus_request_data *req,
+    const char *method,
+    struct blob_attr *msg)
+{
+
+  uint32_t uci_id;
+  ubus_lookup_id(ctx, "uci", &uci_id);
+
+  blob_buf_init(&b, 0);
+  blobmsg_add_string(&b, "config", "system");
+  blobmsg_add_string(&b, "section", "@system[0]");
+  blobmsg_add_string(&b, "option", "hostname");
+  ubus_invoke(ctx, uci_id, "get", b.head, __get_hostname_cb, req, 5000);
+
+  return 0;
+}
+
+```
+
+- Call the `get_hostname` method:
+     ```bash
+     ubus call myservice get_hostname'
+     ```
+- Expected output:
+  ```
+  {
+      "hostname": "OpenWrt"
+  }
+  ```
+
 
 ## Troubleshooting
 
