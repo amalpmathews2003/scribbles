@@ -355,7 +355,7 @@ static int hello_with_name_method(
 
 static const struct ubus_method my_methods[] = {
     UBUS_METHOD_NOARG("say_hello", hello_method),
-    UBUS_METHOD("say_hello_with_name", hello_with_name_method, policy),
+    UBUS_METHOD_NOARG("say_hello_with_name", hello_with_name_method),
 };
 ```
 
