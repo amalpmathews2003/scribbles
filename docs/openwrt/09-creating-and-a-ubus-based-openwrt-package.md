@@ -291,7 +291,7 @@ To run `myservice` as a managed daemon, add an init script.
      scp bin/packages/x86_64/base/myservice_1.0-1_x86_64.apk root@192.168.1.1:/tmp/
      ssh root@192.168.1.1
      cd /tmp
-     apk install --force-reinstall myservice_1.0-1_x86_64.apk
+     apk install myservice_1.0-1_x86_64.apk
      ```
 
 4. **Enable and Start the Service**:
