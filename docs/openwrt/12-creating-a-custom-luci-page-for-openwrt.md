@@ -15,14 +15,15 @@ This guide details the creation, building, and installation of a custom LuCI pac
 ## Step 1: Create the Package Directory Structure
 
 1. **Set Up Directory**:
+
    - Inside the OpenWRT source or SDK directory, create the package directory:
      ```bash
      mkdir -p my-packages/luci-hello/htdocs/luci-static/resources/view/myservice
      mkdir -p my-packages/luci-hello/luasrc/controller
      mkdir -p my-packages/luci-hello/root/usr/share/rpcd/acl.d
      ```
-
 2. **Directory Structure**:
+
    ```
    my-packages/luci-hello/
    ├── Makefile
@@ -143,6 +144,7 @@ include $(TOPDIR)/feeds/luci/luci.mk
 ## Step 6: Build and Install the Package
 
 1. **Ensure LuCI Feed**:
+
    - Verify that the LuCI feed is included in `feeds.conf`:
      ```bash
      echo "src-git luci https://github.com/openwrt/luci.git" >> feeds.conf
@@ -153,8 +155,8 @@ include $(TOPDIR)/feeds/luci/luci.mk
      ./scripts/feeds install -a -p luci
      ./scripts/feeds install -a -p mypackages
      ```
-
 2. **Configure the Package**:
+
    - Run `make menuconfig`:
      ```bash
      make menuconfig
@@ -162,53 +164,59 @@ include $(TOPDIR)/feeds/luci/luci.mk
    - Navigate to `LuCI > Applications > luci-hello` and mark it with `*`.
    - Ensure `myservice`, `luci-base`, `libubus`, `libubox`, `libblobmsg-json`, `rpcd`, `uhttpd`, and `uhttpd-mod-ubus` are selected.
    - Save and exit.
-
 3. **Build the Package**:
+
    - Compile the package:
      ```bash
      make package/luci-hello/compile
      ```
+4. **Restart Services**:
 
-5. **Restart Services**:
    - Restart `rpcd` and `uhttpd` to apply the ACL:
      ```bash
      /etc/init.d/rpcd restart
      /etc/init.d/uhttpd restart
      ```
+5. **Verify myservice**:
 
-6. **Verify myservice**:
    - Ensure `myservice` is running:
+
      ```bash
      ps | grep myservice
      /etc/init.d/myservice restart
      ```
    - Verify the ubus object:
+
      ```bash
      ubus list
      ```
+
      Expected output (partial):
      ```
      myservice
      ```
    - Test `say_hello`:
+
      ```bash
      ubus call myservice say_hello
+
+     ```
 
 ## Step 7: Test the LuCI Page
 
 1. **Access the LuCI Interface**:
-   - Open a web browser and navigate to the device’s LuCI interface (e.g., `http://192.168.1.1` or `http://192.168.1.1:8080` if configured).
-   - Log in with the root credentials (e.g., username: `root`, password: `amalaleena`).
 
+   - Open a web browser and navigate to the device’s LuCI interface (e.g., `http://192.168.1.1` or `http://192.168.1.1:8080` if configured).
+   - Log in with the root credentials (e.g., username: `root`, password: password).
 2. **Navigate to the Page**:
+
    - Go to `Admin > Services > My Button` in the LuCI menu.
    - Expected: A page with a single "Say Hello" button.
-
 3. **Test the Button**:
+
    - Click the "Say Hello" button.
    - Expected: A notification appears with the text `"Hello from C"`.
    - If the call fails, a notification with `"UBUS call failed"` appears.
-
 
 ## Troubleshooting
 
@@ -236,4 +244,3 @@ include $(TOPDIR)/feeds/luci/luci.mk
 - **Extending Functionality**: Add more buttons to call other methods (e.g., `get_hostname`) or integrate with forms for dynamic inputs (see LuCI documentation).
 - **Debugging**: Use browser developer tools (F12) to inspect JavaScript errors and `logread` for server-side issues.
 - **LuCI Dependencies**: Ensure `luci-base` is installed and compatible with the OpenWRT version.
-
