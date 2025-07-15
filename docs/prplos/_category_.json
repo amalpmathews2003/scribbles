@@ -1,8 +1,0 @@
-{
-  "label": "PrplOs",
-  "position": 2,
-  "link": {
-    "type": "generated-index",
-    "description": "PrplOS is an open-source operating system designed specifically for embedded devices and networks within the home broadband ecosystem. It is part of the prpl Foundation's initiative to support an open, distributed architecture for service delivery across the digital home."
-  }
-}
