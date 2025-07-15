@@ -89,6 +89,7 @@ const config = {
         },
         items: [
           { to: '/docs/category/openwrt', label: 'OpenWrt', position: 'left' },
+          { to: '/docs/category/prplos', label: 'prplOS', position: 'left' },
           // {
           //   type: 'docSidebar',
           //   sidebarId: 'tutorialSidebar',
@@ -116,7 +117,7 @@ const config = {
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/intro',
+                to: '/docs/category/openwrt',
               },
             ],
           },
