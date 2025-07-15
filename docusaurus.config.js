@@ -18,6 +18,10 @@ const config = {
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
   },
+  markdown:{
+    mermaid:true,
+  },
+  themes:['@docusaurus/theme-mermaid'],
   // Set the production url of your site here
   url: 'https://scribbles-amal.vercel.app/',
   // Set the /<baseUrl>/ pathname under which your site is served
@@ -89,6 +93,7 @@ const config = {
         },
         items: [
           { to: '/docs/category/openwrt', label: 'OpenWrt', position: 'left' },
+          { to: '/docs/category/prplOS', label: 'prplOS', position: 'left' },
           // {
           //   type: 'docSidebar',
           //   sidebarId: 'tutorialSidebar',
@@ -157,6 +162,9 @@ const config = {
         theme: prismThemes.github,
         darkTheme: prismThemes.dracula,
       },
+      mermaid:{
+        theme: {light: 'neutral', dark: 'default'},
+      }
     }),
 };
 
