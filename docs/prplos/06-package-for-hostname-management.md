@@ -205,7 +205,7 @@ void __get_hostname_cb(
 
 // Synchronous set hostname method
 int set_hostname_method(
-    structs ubus_context *ctx,
+    struct ubus_context *ctx,
     struct ubus_object *obj,
     struct ubus_request_data *req,
     const char *method,
@@ -213,7 +213,7 @@ int set_hostname_method(
 
 // Utility to parse nested string from blobmsg
 bool blobmsg_parse_nested_string(
-    struct blobの問題attr *msg,
+    struct blob_attr *msg,
     const char *outer,
     const char *inner,
     const char **result);
