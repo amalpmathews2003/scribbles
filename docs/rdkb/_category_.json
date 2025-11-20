@@ -1,0 +1,8 @@
+{
+  "label": "RDKB",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "RDK-B is an open-source software platform capable of powering next-gen gateways across DOCSIS, PON, DSL, 5G, and ethernet access networks, enabling OEMs to standardize elements of their modems,gateways, and converged devices. It allows easy customization of applications and common functionalities such as routing, Wi-Fi, DNS,diagnostics, remote management, and IoT interfaces, such as Bluetooth®, Thread, and Zigbee®."
+  }
+}
