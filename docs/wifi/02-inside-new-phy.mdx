@@ -1,0 +1,119 @@
+# Inside Wi-Fi 7’s New PHY: The EHT Revolution
+
+Wi-Fi 7 (IEEE 802.11be) introduces the EHT — Extremely High Throughput PHY, which is the biggest physical-layer upgrade since Wi-Fi 5 (11ac).
+
+## 1. What Is the EHT PHY?
+
+EHT (Extremely High Throughput) is the Wi-Fi 7 physical layer, designed to:
+
+ - Support multi-gigabit throughput
+ - Reduce latency significantly
+ - Operate efficiently in crowded spectrum
+ - Work flexibly across 2.4 GHz, 5 GHz, and 6 GHz
+ - Enable multi-link operation (MLO
+
+EHT introduces enhancements in:
+ - OFDM
+ - Channel width
+ - Modulation
+ - Multiple user scheduling
+ - Spatial streams
+ - Resource allocatio
+
+## 2.Ultra-Wide Channel Support: 320 MHz
+
+Wi-Fi 7 doubles the max channel width of Wi-Fi 6.  
+A 320 MHz channel can carry 2× more subcarriers, giving higher throughput with the same modulation.
+
+#### Why it's important
+
+The 6 GHz spectrum introduced in Wi-Fi 6E enables clean, wide channels — and Wi-Fi 7 capitalizes on that by creating highways for multi-gigabit traffic.
+
+Example PHY peak for 2×2 Wi-Fi 7:
+ - 160 MHz → ~5.8 Gbps
+ - 320 MHz → ~11.5 Gbps
+
+## 3. 4K-QAM: Higher-Order Modulation
+
+<p align="center">
+    <img src="https://www.rcrwireless.com/wp-content/uploads/2022/03/Transmission-performance-of-1024-QAM-2048-QAM-and-4096-QAM-over-150-km-150-km-and-160.jpg"  alt ="4K QAM" width="400"/>
+</p>
+
+| Modulation    | Bits Per Symbol | Improvement       |
+|----------|:---:|-----------:|
+| 1024-QAM    | 10 bits  |   |
+| 4096-QAM     | 12 bits  | +20% throughput  |
+
+This means more data per OFDM symbol — but it requires:
+ - Strong signal
+ - High SNR
+ - Low interference
+
+This upgrade is most beneficial when close to the AP.
+
+## 4.More Efficient OFDMA with Multi-RU Allocation
+
+Wi-Fi 6 introduced OFDMA.  
+Wi-Fi 7 upgrades it with more flexibility.
+
+##### Wi-Fi 6:
+1 user = 1 RU (Resource Unit)
+##### Wi-Fi 7:
+1 user = multiple RUs at the same time
+
+```
+Client A → RU1 + RU3
+Client B → RU2
+Client C → RU4 + RU5
+```
+
+#### Why this matters
+ - Increased per-user throughput
+ - Better utilization in mixed-traffic environments
+ - Solves Wi-Fi 6’s rigid allocation problem  
+ 
+This is crucial for dense deployments like apartments and offices.
+
+
+## 5. Preamble Puncturing 2.0
+
+<p align="center">
+    <img src="https://storage-asset.msi.com/global/picture/news/2023/networking/wifi-7-Preamble%20Puncturing.jpg"  alt ="Preamble Puncturing" width="400"/>
+</p>
+
+Wi-Fi 6E allowed basic punctured transmissions (skip noisy channels).  
+Wi-Fi 7 expands this dramatically. 
+
+#### What’s new?
+ - Skip multiple sub-channels
+ - Use all clean spectrum
+ - Avoid DFS channels with radar interference
+ - Allow 320 MHz to work even if a portion is unusable
+
+Example:  
+If 40 MHz of a 320 MHz channel is noisy, Wi-Fi 7 uses the remaining 280 MHz without downgrading.
+
+## 6. 16 Spatial Streams (Theoretical Maximum)
+
+Wi-Fi 5/6 allow up to 8 spatial streams.  
+Wi-Fi 7 increases this to 16 spatial streams.  
+
+#### Why it matters 
+ - More streams → higher capacity 
+ - Better MU-MIMO performance 
+ - Enables multi-user parallelism  
+ 
+Note: Most consumer devices will not implement all 16 streams, but APs may use them for serving multiple clients.
+
+
+## ❤️ Why the EHT PHY Matters
+
+The EHT PHY is not just about speed — it improves the entire Wi-Fi experience: 
+ - Higher speeds (multi-gigabit) 
+ - Better handling of congestion 
+ - More reliable channels 
+ - Significantly lower latency 
+ - Support for next-gen devices (AR/VR/XR, cloud gaming) 
+ - Power-efficient operations for IoT & mobile
+ 
+Wi-Fi 7 finally brings Wi-Fi closer to the stability of wired Ethernet.
