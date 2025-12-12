@@ -1,0 +1,148 @@
+# Multi-Link Operation (MLO): The Heart of Wi-Fi 7
+
+If there is ONE reason Wi-Fi 7 feels dramatically faster and smoother than every prior Wi-Fi generation, it’s MLO — Multi-Link Operation.
+
+Everything else (320 MHz, 4K-QAM, OFDMA upgrades) boosts speed.
+But MLO boosts experience: latency, stability, roaming, and reliability.
+
+
+## 1. What Is MLO in Wi-Fi 7?
+Traditionally, a Wi-Fi device connects to only one band at a time:
+ - 2.4 GHz or
+ - 5 GHz or
+ - 6 GHz
+
+Even if your router has multiple bands, your phone/laptop uses only one active link at any moment.
+
+### Wi-Fi 7 changes everything
+Wi-Fi 7 devices can connect to multiple bands and channels simultaneously.  
+This means: 
+ - More throughput 
+ - Lower latency 
+ - Better reliability 
+ - Instant fallback if one link is congested 
+ - Smoother roaming between APs   
+ 
+This makes Wi-Fi behave more like multi-path TCP or dual-WAN bonding, but done at the MAC layer.
+
+
+## 2. What Is an MLD (Multi-Link Device)?
+
+To support MLO, both the AP and client become MLDs:
+ - AP-MLD = One router with multiple coordinated radios (2.4 / 5 / 6 GHz)
+ - STA-MLD = A phone/laptop with multiple Wi-Fi chains  
+ 
+ Each link is called an MLD Link.
+
+Example:  
+Your laptop might connect to a Wi-Fi 7 router like this:
+
+Band | Channel| Link ID | Status
+--- | --- | --- | ---
+5 GHz | 80 MHz | Link 0  | Connected
+6 GHz | 160 MHz | Link 1 | Connected
+
+Traffic flows over both at the same time.
+
+
+## 3. Three Modes of MLO
+
+MLO is not one feature — it is a set of parallel multi-link behaviors.  
+
+### Mode 1 — Striped MLO (High Throughput Mode)
+
+Traffic is split across links in parallel.
+
+```
+Packet 1 → 5 GHz
+Packet 2 → 6 GHz
+Packet 3 → 5 GHz
+Packet 4 → 6 GHz
+```
+Benefits:
+ - Maximum speed
+ - Maximum bandwidth 
+ - Better load balancing  
+
+Best for:
+ - Downloads
+ - Streaming
+ - File transfers
+ - Multi-gigabit routers
+
+
+### Mode 2 — Redundant MLO (Low Latency Mode)
+
+The same packet is sent across multiple links:
+```
+Packet A → 5 GHz  
+Packet A → 6 GHz  
+First to succeed wins
+```
+
+Benefits: 
+ - Ultra-low latency 
+ - Zero-lag gaming 
+ - No stutter for AR/VR/XR 
+ - Best reliability
+
+Used by: 
+ - Gaming devices 
+ - VR headsets 
+ - Real-time workloads
+
+This is how Wi-Fi 7 achieves wired-like consistency.
+
+### Mode 3 — Link Steering (Adaptive Mode)
+
+The AP and client dynamically choose the best link for each moment.
+
+Examples:
+ - 6 GHz gets interfered → instantly move to 5 GHz
+ - DFS event in 5 GHz → instantly move to 6 GHz
+ - AP wants to reduce congestion → push client to cleaner link
+
+This eliminates:
+ - Random lag spikes
+ - Reconnect delays
+ - Roaming drops
+
+
+## 4. Limitations of MLO
+
+ - Client must also support MLO  
+ Old devices get NO benefit.
+ - Only certain band combinations work  
+5+6 GHz most common.
+2.4 GHz used mostly for steering/fallback.
+ -  More power consumption on clients  
+Phones must activate multiple radios at once — mitigated by power save modes.
+ - Routers must have multiple RF chains  
+Cheap routers won’t support full multi-link.
+
+## 5. How MLO Works Internally
+
+### New MLME Layer
+Wi-Fi 7 introduces Multi-Link Management Entity (MLME):
+ - Manages all links
+ - Coordinates traffic
+ - Handles ML authentication
+ - Exchanges ML-beacons & ML-IEs
+
+### Single MLD MAC Address
+An MLD uses one MAC address for all links, simplifying routing.
+
+### Per-Link PHY
+Each link can have:
+ - Different channel width
+ - Different modulation
+ - Different power
+ - Different RF chain
+ 
+### MLO Authentication 
+MLO authentication = secure handshake for all links:
+ - Primary link is authenticated (SAE/WPA3)
+ - Other links are attached securely
+ - One security context shared across links
+
+This reduces handshake overhead.
