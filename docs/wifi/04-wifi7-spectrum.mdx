@@ -1,0 +1,124 @@
+# Wi-Fi 7 Spectrum Explained: 6 GHz, 320 MHz, DFS & AFC
+
+Wi-Fi 7’s headline features — 320 MHz channels, multi-gigabit speeds, and low latency — are only possible because of spectrum changes, not magic PHY tricks.
+
+To understand Wi-Fi 7 properly, you must understand:
+ - Why 6 GHz exists
+ - Why 320 MHz only works there
+ - Why DFS still matters
+ - Why AFC will shape the future of Wi-Fi 7.  
+ 
+Let’s break it down.
+
+
+## 1. Why Spectrum Is the Real Bottleneck in Wi-Fi
+
+Wi-Fi performance is limited by how much clean radio spectrum is available.
+
+Legacy problems:
+ - 2.4 GHz → crowded, narrow, noisy
+ - 5 GHz → fragmented, DFS restrictions, radar interference
+
+Wi-Fi 6 improved efficiency, but spectrum was still limited.
+
+Wi-Fi 7 solves this by:
+ - Expanding into 6 GHz
+ - Allowing wider contiguous channels
+ - Reducing legacy compatibility overhead
+
+## 2. The 6 GHz Band: The Wi-Fi Superhighway
+
+<img src="https://www.litepoint.com/wp-content/uploads/2021/03/spectrum-rules-diagrams-031021-scaled.jpg" width="600" />
+
+The 6 GHz band (roughly 5925–7125 MHz, varies by country) is the largest spectrum expansion in Wi-Fi history.
+
+What makes 6 GHz special?
+ - No legacy Wi-Fi devices
+ - No microwave ovens
+ - No Bluetooth
+ - No backward-compatibility overhead
+
+Only Wi-Fi 6E and Wi-Fi 7 devices are allowed.
+
+#### Channel availability
+
+Channel Width | Number of Channels|   
+--- | ---| 
+20 MHz | 59 |
+40 MHz| 29 |
+80 MHz| 14 |
+160 MHz| 7 |
+320 MHz| 3 |
+
+
+## 3. Why 320 MHz Channels Are a Big Deal
+
+ - Twice the subcarriers
+ - Twice the raw throughput
+ - Lower scheduling overhead
+ - Better efficiency for MLO
+
+Important reality check:
+ - 320 MHz only works in 6 GHz
+ - It requires a clean RF environment
+ - Best suited for homes, offices, and mesh backhaul
+
+In dense apartments, 160 MHz + MLO may perform better.
+
+## 4. Why 5 GHz Still Matters (and Why DFS Exists)
+
+<img src="https://oguzhaneren.com/wp-content/uploads/2017/12/graphic-80211-acchannels-all.png?w=625" width="400" />
+
+The 5 GHz band still carries much of today’s Wi-Fi traffic — including Wi-Fi 7.
+But it has a problem: radar systems.
+
+#### DFS (Dynamic Frequency Selection)
+
+DFS exists to protect:
+ - Weather radar
+ - Military radar
+ - Aviation systems
+
+What DFS forces APs to do:
+ - Scan channel before use (CAC)
+ - Vacate channel if radar is detected
+ - Move clients to a new channel
+
+Why this hurts performance:
+ - Sudden channel switches
+ - Client reconnect delays
+ - Throughput drops
+
+### Wi-Fi 7’s Improvement: Smarter DFS Handling
+
+ - ✔ MLO fallback  
+If 5 GHz DFS triggers → traffic instantly shifts to 6 GHz.
+ - ✔ Punctured transmission  
+If part of a wide channel is noisy, Wi-Fi 7 avoids only that section.
+ - ✔ Faster channel switching  
+Improved coordination reduces downtime.
+
+
+DFS doesn’t disappear — Wi-Fi 7 just makes it less painful.
+
+## 6. AFC (Automated Frequency Coordination):
+
+<img src="https://www.qorvo.com/-/media/images/qorvopublic/blog/2024/jan-afc/afc-image-5.png" width="400" />
+
+AFC is a cloud-based coordination system for 6 GHz.
+
+#### Why AFC is needed:
+
+Some 6 GHz frequencies are used by:
+ - Fixed microwave links
+ - Outdoor point-to-point radios 
+ 
+AFC ensures Wi-Fi devices:
+ - Know where they are (geo-location)
+ - Query a database
+ - Use only safe frequencies
+
+AFC enables:
+ - Higher power Wi-Fi 7
+ - Outdoor Wi-Fi 7 APs
+ - Long-range mesh links

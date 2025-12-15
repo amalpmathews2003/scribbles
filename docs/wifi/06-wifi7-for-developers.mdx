@@ -1,0 +1,129 @@
+# Wi-Fi 7 for Developers: mac80211, nl80211, hostapd & Drivers
+
+
+
+Wi-Fi 7 isn’t just a PHY/MAC upgrade — it required deep changes across the Linux Wi-Fi stack, from kernel to userspace.
+
+## 1. The Linux Wi-Fi Stack 
+
+<img src="https://substackcdn.com/image/fetch/%24s_%21KMN_%21%2Cw_1200%2Ch_600%2Cc_fill%2Cf_jpg%2Cq_auto%3Agood%2Cfl_progressive%3Asteep%2Cg_auto/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F07868656-5356-4bac-8e3d-30565327183f_462x472.png" />
+
+Key idea:
+ - hostapd / wpa_supplicant implement policy & security
+ - mac80211 implements the Wi-Fi MAC
+ - Drivers define capability
+ - nl80211 is just the control pipe
+
+
+## 2. What Changed for Wi-Fi 7 (802.11be)
+
+Wi-Fi 7 introduced:
+ - EHT PHY
+ - Multi-Link Operation (MLO)
+ - 320 MHz channels
+ - Multi-RU scheduling
+ - New security semantics
+ 
+Linux had to add:
+- EHT capability advertisement
+- MLO link management
+- New nl80211 attributes
+- ML-aware station handling
+- ML-authentication flow
+
+
+# 3. mac80211: What It Does for Wi-Fi 7
+
+mac80211 handles:
+- Frame aggregation (A-MPDU / A-MSDU)
+- Rate control (Minstrel-EHT)
+- OFDMA scheduling hooks
+- Block-ACK sessions
+- Per-link TX/RX queues
+- MLO coordination
+
+#### New mac80211 responsibilities in Wi-Fi 7:
+ - Maintain MLD context
+ - Track multiple links per STA
+ - Support per-link PHY parameters
+ - Coordinate aggregation across links
+ 
+mac80211 does not:
+ - Do WPA3/SAE
+ - Authenticate clients
+ - Manage security policies
+ 
+ Those remain in userspace.
+
+
+# 4. cfg80211: Policy & Regulatory Enforcement
+
+cfg80211:
+ - Enforces country code
+ - Validates 6 GHz operation
+ - Applies DFS rules
+ - Controls channel availability
+ - Coordinates AFC 
+ 
+For Wi-Fi 7:
+ - Validates 320 MHz channel layouts
+ - Enforces 6 GHz security requirements
+ - Prevents illegal EHT combinations
+ - Tracks DFS events across MLO links
+ 
+# nl80211: How Userspace Talks to the Kernel
+
+nl80211 exposes:
+ - EHT capabilities
+ - MLO attributes
+ - Link-specific parameters
+ - RU allocation metadata
+ - Per-STA statistics
+ 
+Example debugging:
+
+```sh
+iw phy0 info
+iw dev wlan0 station dump
+iw dev wlan0 survey dump
+```
+If nl80211 doesn’t expose it, userspace can’t use it.
+
+
+# 6. hostapd: The Wi-Fi 7 AP Brain
+
+hostapd implements:
+ - WPA3-SAE / OWE / Enterprise
+ - PMF (802.11w)
+ - MLO authentication
+ - FT (802.11r)
+ - 802.11k/v/r
+ - AP configuration logic
+
+Wi-Fi 7-specific hostapd features:
+ - ieee80211be=1
+ - EHT operation elements
+ - ML-IEs in beacon/probe
+ - Single security context for all links
+ - Coordinated link bring-up
+
+Example
+
+```
+ieee80211be=1
+ieee80211ax=1
+wpa=2
+wpa_key_mgmt=SAE
+ieee80211w=2
+mlo=1
+```
+hostapd decides how Wi-Fi 7 behaves.
+
+# 7. Drivers: Where Reality Is Decided# 
+
+Driver + firmware ultimately decide:
+ - Supported channel widths
+ - Supported MCS (up to 4K-QAM)
+ - Number of spatial streams
+ - MLO capability
+ - Aggregation limits

@@ -1,0 +1,126 @@
+# Troubleshooting WiFi
+
+## 1. Start With the Right Question
+
+Before touching configs, answer this:  
+```Is the problem Wi-Fi, LAN, or Internet?```
+
+Always test LAN performance first.
+
+```
+iperf3 -s   # on AP/router
+iperf3 -c <AP-IP>   # on client
+```
+If LAN is slow → Wi-Fi problem
+If LAN is fast → Internet problem
+
+## 2. Check Signal Quality (RSSI & SNR)
+
+```
+iw dev wlan0 link
+```
+
+If RSSI is poor:
+ - Reduce channel width
+ - Move closer
+ - Add APs (mesh)
+ - Avoid walls, metal, mirrors
+ 
+# 3. Read MCS & Spatial Streams
+
+High PHY ≠ high throughput.
+
+```
+iw dev wlan0 station dump
+```
+Look for:
+ - MCS index
+ - NSS (spatial streams)
+ - Expected throughput
+ 
+# 4. Check RF Congestion & Interference
+
+```
+iw dev wlan0 station dump
+```
+
+Watch:
+ - Channel busy time
+ - Noise floor
+ - Overlap from neighbors
+ 
+Red flags:
+ - Busy time > 50%
+ - Noise > −85 dBm
+ - Repeated DFS events
+
+# 5. Debug MLO
+
+#### Confirm MLO is active:
+```
+iw phy0 info | grep -i eht
+```
+
+Check if:
+ - Multiple links are associated
+ - Both links carry traffic
+ 
+MLO helps latency & reliability more than peak speed.
+
+
+# 6. Security Misconfigurations
+
+Correct baseline:
+ - WPA3-SAE
+ - PMF required
+ - AES-CCMP/GCMP only
+ 
+# 7. Aggregation Problems (A-MPDU / A-MSDU)
+
+Symptoms:
+ - Low throughput despite good PHY
+ - High retransmissions
+ 
+```
+iw dev wlan0 station dump
+```
+
+Look for:
+ - Retry counts
+ - AMPDU size
+ - BA session drops
+
+Aggregation failures usually indicate:
+ - Interference
+ - Driver bugs
+ - Poor SNR
+
+# 8. Client Devices
+
+Not all “Wi-Fi 7” clients are equal.
+
+| Device     | Typical Capability    |
+| ---------- | --------------------- |
+| Phones     | 1×1 or 2×2            |
+| Laptops    | 2×2                   |
+| XR devices | High-priority latency |
+| IoT        | Legacy, slow          |
+
+Common client issues:
+ - Power saving throttles MLO
+ - Old drivers
+ - Poor antenna placement
+ - Thermal throttling
+ 
+
+# Checklist
+
+ -   Test LAN before WAN
+ -   Verify RSSI & SNR
+ -   Read MCS & NSS
+ -   Reduce channel width if unstable
+ -   Prefer 6 GHz
+ -   Validate MLO
+ -   Check aggregation
+ -   Update drivers & firmware
+ -   Test multiple clients

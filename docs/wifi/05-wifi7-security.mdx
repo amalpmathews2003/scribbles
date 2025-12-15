@@ -1,0 +1,116 @@
+# Wi-Fi 7 Security
+
+Wi-Fi 7 isn’t just about speed — it is the first Wi-Fi generation built with modern security assumptions.
+
+Earlier Wi-Fi standards assumed:
+  - Trusted environments
+  - Weak attackers
+  - Few devices
+  - Minimal mobility
+
+Wi-Fi 7 security is designed for:
+ - Dense deployments
+ - Public networks
+ - Multi-link connections
+ - Zero-trust assumptions
+ - Continuous mobility
+
+## 1. Why WPA2 Is No Longer Enough
+
+WPA2-PSK (used by most Wi-Fi networks today) has a fundamental design flaw:  
+```The authentication handshake can be captured and cracked offline.```
+
+WPA2 problem summary:
+ - 4-way handshake is observable
+ - Attacker captures handshake once
+ - Unlimited offline password guesses
+ - GPU-accelerated dictionary attacks
+ - Weak passwords fall in minutes
+ 
+This is not a bug — it is a protocol limitation.
+
+# 2. WPA3 Is Mandatory in Wi-Fi 7 (Especially 6 GHz)
+
+Wi-Fi 7 requires WPA3 on the 6 GHz band.
+
+Allowed security modes in 6 GHz:
+ - WPA3-Personal (SAE)
+ - WPA3-Enterprise
+ - OWE (Enhanced Open)
+
+🚫 WPA2 is forbidden  
+🚫 Open (unencrypted) Wi-Fi is forbidden
+
+
+## 3. SAE: How WPA3 Stops Dictionary Attacks
+
+<img src="https://learn.microsoft.com/en-us/windows-hardware/drivers/network/images/wpa3-sae-authentication-flow.png" width="500"/>
+
+WPA3 replaces PSK with SAE (Simultaneous Authentication of Equals).
+
+What SAE changes:
+
+| WPA2               | WPA3-SAE                            |
+| ------------------ | ----------------------------------- |
+| Static PSK         | Password-authenticated key exchange |
+| Offline cracking   | Impossible                        |
+| Unlimited guesses  |  Rate-limited                      |
+| No forward secrecy |  Forward secrecy                   |
+
+Why SAE is secure:
+ - Uses elliptic-curve cryptography
+ - No reusable password-derived hashes
+ - Each guess requires live AP interaction
+ - AP can throttle or block attempts
+
+Even weak passwords become dramatically harder to attack.
+
+
+## 4. PMF (Protected Management Frames) Is Now Required
+
+Before WPA3, management frames were unauthenticated.
+
+Attackers could:
+ - Send fake deauth frames
+ - Kick users off networks
+ - Force evil-twin connections
+ - Break roaming and calls
+
+PMF (802.11w) protects:
+ - Deauthentication
+ - Disassociation
+ - Action frames
+ 
+Result:
+ - Deauth attacks no longer work
+ - Roaming is safer
+ - Mesh networks become stable
+
+## 5. OWE: Secure Open Wi-Fi (No Passwords, Still Encrypted)
+
+OWE (Opportunistic Wireless Encryption) solves a long-standing problem:
+```How do you encrypt public Wi-Fi without passwords?```
+
+OWE provides:
+ - Encryption without authentication
+ - Per-client keys
+ - No shared secrets
+ - Protection from passive sniffing
+
+
+## 6.Enterprise Security in Wi-Fi 7
+
+Wi-Fi 7 supports:
+ - WPA3-Enterprise
+ - 192-bit security mode
+ - EAP-TLS
+ - Certificate-based auth
+ - Zero-trust networking
+
+
+# Final Takeaways
+ - WPA3 eliminates offline cracking
+ - PMF blocks deauth & spoofing
+ - OWE secures public Wi-Fi
+ - MLO security prevents link abuse
+ - 6 GHz enforces modern defaults
